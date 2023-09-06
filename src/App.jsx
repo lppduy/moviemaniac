@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import MovieList from './components/MovieList/MovieList';
 import Navbar from './components/Navbar/Navbar';
 
 const App = () => {
@@ -7,7 +8,9 @@ const App = () => {
     <div className="app">
       <Navbar />
 
-      <main>Main content</main>
+      <main>
+        <MovieList />
+      </main>
     </div>
   );
 };
