@@ -6,6 +6,8 @@ import MovieCard from './MovieCard';
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
+  const [filterMovies, setFilterMovies] = useState([]);
+  const [minRating, setMinRating] = useState(0);
 
   useEffect(() => {
     fetchMovies();
@@ -18,6 +20,20 @@ const MovieList = () => {
     const data = await response.json();
 
     setMovies(data.results);
+    setFilterMovies(data.results);
+  };
+
+  const handleFilter = rate => {
+    if (rate === minRating) {
+      setMinRating(0);
+      setFilterMovies(movies);
+      return;
+    }
+
+    setMinRating(rate);
+
+    const filtered = movies.filter(movie => movie.vote_average >= rate);
+    setFilterMovies(filtered);
   };
 
   return (
@@ -29,9 +45,24 @@ const MovieList = () => {
 
         <div className="align_center movie_list_fs">
           <ul className="align_center movie_filter">
-            <li className="movie_filter_item active">8+ Star</li>
-            <li className="movie_filter_item">7+ Star</li>
-            <li className="movie_filter_item">6+ Star</li>
+            <li
+              className={`movie_filter_item ${minRating === 8 ? 'active' : ''}`}
+              onClick={() => handleFilter(8)}
+            >
+              8+ Star
+            </li>
+            <li
+              className={`movie_filter_item ${minRating === 7 ? 'active' : ''}`}
+              onClick={() => handleFilter(7)}
+            >
+              7+ Star
+            </li>
+            <li
+              className={`movie_filter_item ${minRating === 6 ? 'active' : ''}`}
+              onClick={() => handleFilter(6)}
+            >
+              6+ Star
+            </li>
           </ul>
 
           <select name="" id="" className="movie_sorting">
@@ -47,7 +78,7 @@ const MovieList = () => {
       </header>
 
       <div className="movie_cards">
-        {movies.map(movie => (
+        {filterMovies.map(movie => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
