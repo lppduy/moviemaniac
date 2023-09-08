@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import _ from 'lodash';
 
 import './MovieList.css';
 import Fire from '../../assets/fire.png';
@@ -14,6 +15,13 @@ const MovieList = () => {
   useEffect(() => {
     fetchMovies();
   }, []);
+
+  useEffect(() => {
+    if (sort.by !== 'default') {
+      const sortedMovies = _.orderBy(filterMovies, [sort.by], [sort.order]);
+      setFilterMovies(sortedMovies);
+    }
+  }, [sort]);
 
   const fetchMovies = async () => {
     const response = await fetch(
@@ -41,7 +49,7 @@ const MovieList = () => {
   const handleSort = e => {
     const { name, value } = e.target;
     setSort(prev => ({ ...prev, [name]: value }));
-  }; // take note 📝
+  }; // TAKE NOTE 📝
 
   console.log(sort);
 
