@@ -6,7 +6,7 @@ import Fire from '../../assets/fire.png';
 import MovieCard from './MovieCard';
 import FilterGroup from './FilterGroup';
 
-const MovieList = () => {
+const MovieList = ({ type, title, emoji }) => {
   const [movies, setMovies] = useState([]);
   const [filterMovies, setFilterMovies] = useState([]);
   const [minRating, setMinRating] = useState(0);
@@ -14,7 +14,7 @@ const MovieList = () => {
 
   useEffect(() => {
     fetchMovies();
-  }, []);
+  }, [type]);
 
   useEffect(() => {
     if (sort.by !== 'default') {
@@ -25,7 +25,7 @@ const MovieList = () => {
 
   const fetchMovies = async () => {
     const response = await fetch(
-      'https://api.themoviedb.org/3/movie/popular?api_key=9c077705bb9d788c3dc177a9316f01c5',
+      `https://api.themoviedb.org/3/movie/${type}?api_key=9c077705bb9d788c3dc177a9316f01c5`,
     );
     const data = await response.json();
 
@@ -54,31 +54,17 @@ const MovieList = () => {
   console.log(sort);
 
   return (
-    <section className="movie_list">
+    <section className="movie_list" id={type}>
       <header className="align_center movie_list_header">
         <h2 className="align_center movie_list_heading">
-          Popular
-          <img
-            src={Fire}
-            alt="fire emoji"
-            className="navbar_emoji"
-          />
+          {title}
+          <img src={emoji} alt={`${emoji} icon`} className="navbar_emoji" />
         </h2>
 
         <div className="align_center movie_list_fs">
-          <FilterGroup
-            minRating={minRating}
-            onRatingClick={handleFilter}
-            ratings={[8, 7, 6]}
-          />
+          <FilterGroup minRating={minRating} onRatingClick={handleFilter} ratings={[8, 7, 6]} />
 
-          <select
-            name="by"
-            id=""
-            className="movie_sorting"
-            onChange={handleSort}
-            value={sort.by}
-          >
+          <select name="by" id="" className="movie_sorting" onChange={handleSort} value={sort.by}>
             <option value="default">SortBy</option>
             <option value="release_date">Date</option>
             <option value="vote_average">Rating</option>
@@ -98,10 +84,7 @@ const MovieList = () => {
 
       <div className="movie_cards">
         {filterMovies.map(movie => (
-          <MovieCard
-            key={movie.id}
-            movie={movie}
-          />
+          <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
     </section>
